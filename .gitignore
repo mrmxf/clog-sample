@@ -1,0 +1,24 @@
+# Binaries
+*.exe
+*.exe~
+clog-sample
+
+# Test binary
+*.test
+
+# Output
+*.out
+
+# Go workspace (local only)
+go.work
+go.work.sum
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db

@@ -3,6 +3,9 @@
 *.exe~
 clog-sample
 
+# Local config overrides (not committed — put local paths/dev tweaks here)
+.clog.yaml
+
 # Test binary
 *.test
 

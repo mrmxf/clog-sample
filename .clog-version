@@ -1,0 +1,7 @@
+# clog orchestrator version — the single source of truth for which clog binary
+# both developers and CI install (Phase 9½, Workstream B). Consumed by:
+#   - the dev install:  CLOG_VERSION_FILE=.clog-version  get-clog.sh
+#   - the CI bootstrap: mrmxf/util/.github/actions/setup-clog (reads this file)
+# Pinning here — not a floating tag or a secret — is what keeps dev and CI on
+# byte-identical clog. Bump deliberately.
+v0.10.11

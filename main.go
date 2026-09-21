@@ -30,9 +30,6 @@ import (
 //go:embed releases.yaml
 var ReleasesFs embed.FS
 
-//go:embed clogrc/clog.yaml
-var ClogYaml embed.FS
-
 var debugFlag bool
 
 var rootCmd = &cobra.Command{
@@ -74,9 +71,6 @@ func main() {
 	}
 	if err := kfg.Konfigure(&bootOpts); err != nil {
 		slog.Warn("base config load failed", "err", err)
-	}
-	if err := kfg.MergeKonfig(&kfg.KonfigureOpt{AppFs: ClogYaml, FilePath: "clogrc/clog.yaml"}); err != nil {
-		slog.Debug("sample config merge failed", "err", err)
 	}
 	if err := kfg.AutoMerge(); err != nil {
 		slog.Debug("working-directory config merge failed", "err", err)

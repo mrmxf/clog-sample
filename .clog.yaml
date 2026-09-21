@@ -1,0 +1,94 @@
+#  Copyright ©2017-2025  Mr MXF   info@mrmxf.com
+#  BSD-3-Clause License           https://opensource.org/license/bsd-3-clause/
+---
+# clog-sample configuration.
+#
+# .clog.yaml in the repo root is THE canonical place for a repo's config, and
+# this file is the worked example of that. It overlays util's embedded konfig:
+#
+#   util/embedfs/konfig.yaml   the base - bc-* workers, git:, install:, check:
+#   .clog.yaml                 this file - last, so it wins
+#
+# There is no clogrc/clog.yaml. That path is legacy and is no longer searched.
+
+clog:
+  releases-path: "releases.yaml"
+
+# ─── snippets ────────────────────────────────────────────────────────────────
+snippets:
+  bc-main-repo: echo "github.com/mrmxf/clog-sample"
+
+  project:
+    config: |
+      export PROJECT=clog-sample
+      export EXE=clog-sample
+      export TITLE="clog sample app"
+    needs:
+      golang: cat go.mod | grep '^go ' | grep -oE '[0-9]+\.[0-9]+(\.[0-9]+)?'
+    has:
+      golang: go version | grep -oE '[0-9]+\.[0-9]+\.[0-9]+'
+
+  # clog-sample build — single native binary into tmp/
+  build: |
+    export EXE="clog-sample"
+    export TITLE="clog sample app"
+    clog BC flow --reset
+    clog BC flow --check "pre-build build" --build "golang"
+
+  # ─── demo snippets ─────────────────────────────────────────────────────────
+  # These exist to show the snippet shapes, not to do work.
+  hello:
+    help: "Say hello (a plain snippet)"
+    script: echo "hello from clog-sample"
+
+  go-ver:
+    help: "Print the Go toolchain version"
+    script: go version
+
+  git-status:
+    help: "Short git status"
+    script: git status --short
+
+  sample-check:
+    help: "Run the 'sample' check group (same as: clog-sample Check sample)"
+    script: go run . Check sample
+
+# ─── check ───────────────────────────────────────────────────────────────────
+# NOTE there is deliberately no `tools:` group here. util's base defines a real
+# check.tools (golang, yq, aws cli v2), and a group of the same name in this
+# layer would shadow it - koanf does not merge the blocks lists, it replaces.
+check:
+  build:
+    blocks:
+      - name: go vet
+        try: go vet ./...
+        ok:   echo "  go vet passed"
+        catch: |
+          echo "  go vet found problems"
+          exit 1
+      - name: go test
+        try: go test ./...
+        ok:   echo "  go test passed"
+        catch: |
+          echo "  go test failed"
+          exit 1
+
+  # demo group, named so it cannot collide with a real one
+  sample:
+    blocks:
+      - name: golang installed
+        try: which go
+        ok: echo "  go present"
+        catch: echo "  go missing"
+      - name: git installed
+        try: which git
+        ok: echo "  git present"
+        catch: echo "  git missing"
+      - name: go.mod present
+        try: test -f go.mod
+        ok: echo "  go.mod present"
+        catch: echo "  no go.mod"
+      - name: not running in CI
+        try: test -z "$CI"
+        ok: echo "  local shell (not CI)"
+        catch: echo "  running in CI"

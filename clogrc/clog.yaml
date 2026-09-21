@@ -19,12 +19,17 @@ snippets:
     help: "Show git working-tree status"
     script: git status --short
 
-  tools-check:
-    help: "Run the 'tools' check group (same as: clog-sample Check tools)"
-    script: go run . Check tools
+  sample-check:
+    help: "Run the 'sample' check group (same as: clog-sample Check sample)"
+    script: go run . Check sample
 
 # ─── check ───────────────────────────────────────────────────────────────────
-# Run with: clog-sample Check tools
+# Run with: clog-sample Check sample
+#
+# Named "sample", not "tools": util's base konfig already defines a real
+# check.tools group (golang, yq, aws cli v2) that build jobs rely on, and a
+# demo group of the same name would shadow it for every repo that runs this
+# binary in CI without defining its own.
 #
 # Each block ANDs its env: + try: conditions. The value beside each condition is
 # the state it must satisfy:
@@ -36,7 +41,7 @@ snippets:
 # then: runs when ALL conditions are truthy; else: when ANY is falsy (ok:/catch:
 # are accepted aliases). finally: always runs and can read the $CHECK_* vars.
 check:
-  tools:
+  sample:
     name: "sample tool checks"
     blocks:
       - name: golang installed

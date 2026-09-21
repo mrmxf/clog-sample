@@ -21,8 +21,12 @@ snippets:
   project:
     config: |
       export PROJECT=clog-sample
-      export EXE=clog-sample
-      export TITLE="clog sample app"
+      # EXE is the ASSET PREFIX as well as the binary name, and
+      # util's get-clog.sh downloads clog-<cpu>-<os>. Built as
+      # clog-sample-* the release would be undownloadable by
+      # setup-clog, which is the only reason this repo publishes.
+      export EXE=clog
+      export TITLE="Command Line of Go"
     needs:
       golang: cat go.mod | grep '^go ' | grep -oE '[0-9]+\.[0-9]+(\.[0-9]+)?'
     has:
@@ -30,8 +34,8 @@ snippets:
 
   # clog-sample build — single native binary into tmp/
   build: |
-    export EXE="clog-sample"
-    export TITLE="clog sample app"
+    export EXE="clog"
+    export TITLE="Command Line of Go"
     clog BC flow --reset
     clog BC flow --check "pre-build build" --build "golang"
 

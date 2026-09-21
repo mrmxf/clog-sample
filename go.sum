@@ -86,6 +86,8 @@ github.com/mrmxf/util/crayon v0.11.1 h1:J3C2vuthpR0T+pufT/xMeTKzvJeaXXIQG8+RjRa7
 github.com/mrmxf/util/crayon v0.11.1/go.mod h1:RaQR6hbAuCXV+tjb25XK8WVpWGqScT84eTZ3pSq3tms=
 github.com/mrmxf/util/embedfs v0.12.0 h1:67vriI9pAkAlJ+YD+nByYh/d8fxftTPIjK5fokG6rbg=
 github.com/mrmxf/util/embedfs v0.12.0/go.mod h1:qP+0mIlRqZ3Ikk1u5GXrEw6d5bIzoiteAAcXInYxYyo=
+github.com/mrmxf/util/embedfs v0.13.0 h1:iQ2x8MCJoc+fJA1mCB52NVvkGFHxZEkCpyb9i011o7s=
+github.com/mrmxf/util/embedfs v0.13.0/go.mod h1:qP+0mIlRqZ3Ikk1u5GXrEw6d5bIzoiteAAcXInYxYyo=
 github.com/mrmxf/util/install v0.11.2 h1:A1MwYQ3DtSlsGciWVl1Zfnp7ACdOR5hmHIiOJ9V4lE0=
 github.com/mrmxf/util/install v0.11.2/go.mod h1:l7IWmp8Vl7w0XeiRRW+NVe76eZd584iah7EI4ieYnoo=
 github.com/mrmxf/util/kfg v0.11.0 h1:ybiNmPdDx+AmleNTsG8Ee16lLayN6UXW4qtEHCxVFHE=

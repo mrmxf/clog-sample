@@ -43,7 +43,7 @@ require (
 	github.com/mrmxf/util/ci v0.17.0 // indirect
 	github.com/mrmxf/util/cmdlog v0.11.1 // indirect
 	github.com/mrmxf/util/crayon v0.11.1 // indirect
-	github.com/mrmxf/util/embedfs v0.12.0 // indirect
+	github.com/mrmxf/util/embedfs v0.13.0 // indirect
 	github.com/mrmxf/util/install v0.11.2 // indirect
 	github.com/mrmxf/util/scripts v0.11.0 // indirect
 	github.com/mrmxf/util/shell v0.11.0 // indirect

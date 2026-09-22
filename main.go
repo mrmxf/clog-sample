@@ -79,7 +79,17 @@ func main() {
 	}
 
 	// set SemVer so commands that format version strings have data
-	semver.Info()
+	info := semver.Info()
+
+	// `clog --version` is part of the contract, not a convenience: util's
+	// clog-prepare action runs it to prove the binary it just built works, and
+	// setup-clog reports it as the action's `version` output. Cobra supplies
+	// the flag as soon as Version is non-empty. `clog buildinfo` stays the
+	// long form.
+	rootCmd.Version = info.Long
+	if rootCmd.Version == "" {
+		rootCmd.Version = info.Short
+	}
 
 	if err := bootStrap(rootCmd); err != nil {
 		slog.Error("bootstrap failed", "err", err)

@@ -112,8 +112,21 @@ laptop can reproduce.
 ## Dependencies
 
 `go.mod` pins published `github.com/mrmxf/util/*` module versions with no
-`replace` directive. A change needed in util must be tagged and released there
-before this repo can use it — plan work in that order.
+`replace` directive. A change needed in util must be tagged **per module**
+(`buildinfo/v0.13.0`, not `v0.13.0`) and pushed to mrmxf/util before this repo
+can use it — plan work in that order.
+
+**`../go.work` hides broken pins.** `/home/bruce/gr/clogs/go.work` puts util's
+local working tree into the workspace, so a local build uses util's *source*,
+not the versions in `go.mod`. A runner has no workspace and uses the pins. Before
+claiming a change builds, check it the way CI does:
+
+```console
+$ GOWORK=off go build ./...
+```
+
+This is not hypothetical: the repo's first CI run failed on a `bc v0.13.0` /
+`buildinfo v0.12.0` pair that had been building green locally for days.
 
 ## Gotchas
 

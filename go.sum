@@ -96,6 +96,8 @@ github.com/mrmxf/util/embedfs v0.14.1 h1:MlqCLR3hWcyT5zBAYCGr+3Fy9kmKYE0LfPgZqxz
 github.com/mrmxf/util/embedfs v0.14.1/go.mod h1:qP+0mIlRqZ3Ikk1u5GXrEw6d5bIzoiteAAcXInYxYyo=
 github.com/mrmxf/util/install v0.12.0 h1:SiF6v1GXtJHgg6O9XNp69Jqf/vZaFLrzY56Fxjw4+MQ=
 github.com/mrmxf/util/install v0.12.0/go.mod h1:l7IWmp8Vl7w0XeiRRW+NVe76eZd584iah7EI4ieYnoo=
+github.com/mrmxf/util/install v0.13.0 h1:xqTMdJ7Jclt1ActCa5XhxLlgTQYhHyRzc0QVF2QnNrw=
+github.com/mrmxf/util/install v0.13.0/go.mod h1:l7IWmp8Vl7w0XeiRRW+NVe76eZd584iah7EI4ieYnoo=
 github.com/mrmxf/util/kfg v0.12.0 h1:wgPYaZ1UsvACfqPOqTeCgaVFT0UKScQc6/0PR/XT4ak=
 github.com/mrmxf/util/kfg v0.12.0/go.mod h1:/tKpEYYSJnuMNJ1oI6B2PMGdmvizs7omx7zDV/257QM=
 github.com/mrmxf/util/scripts v0.11.0 h1:u0s6Pt1ln9ZInYq4vKbYpiCwo+wgNiv23jo2tlG2cG4=

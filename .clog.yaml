@@ -14,6 +14,42 @@
 clog:
   releases-path: "releases.yaml"
 
+# ─── ci ──────────────────────────────────────────────────────────────────────
+# This repo publishes the clog binaries that every other repo bootstraps from,
+# so it is the one repo that must be able to build and release ITSELF. The
+# whole release is these few keys plus `clog build prod && clog deploy prod`.
+ci:
+  artifact: clog-binaries        # build uploads it, the release job downloads it
+  title: "clog"                  # Slack title, when a hook is configured
+
+  # One stack. The `golang` type carries the toolchain, the check phases and
+  # the make phases, so `clog build`, `clog watch` and util's build workflow
+  # all learn what this repo is from one word.
+  stack: golang
+
+  policy:
+    # Every event builds; only a vX.Y.Z tag (or a deliberate manual run)
+    # publishes. A pull request never deploys, whatever this says.
+    build: [branch, tag, pr, dispatch, local]
+    deploy:
+      prod:
+        tags: ["v*"]
+        dispatch: true
+
+  targets:
+    # The bootstrap target. util's setup-clog action downloads
+    #   https://github.com/<repo>/releases/download/<tag>/clog-<cpu>-<os>
+    # and refuses to install a binary it cannot verify against checksums.txt,
+    # so both are published together or not at all.
+    release:
+      kind: github-release
+      modes: [prod]              # a dev build has no business making a release
+      prod:
+        repo: mrmxf/clog-sample
+        tag: "{tag}"             # the release tag at HEAD - prod refuses without one
+        dir: tmp                 # where bc-golang writes, and what the scan sweeps
+        assets: clog-amd-lnx clog-arm-lnx clog-amd-mac clog-arm-mac
+
 # ─── snippets ────────────────────────────────────────────────────────────────
 snippets:
   bc-main-repo: echo "github.com/mrmxf/clog-sample"
@@ -34,12 +70,74 @@ snippets:
     has:
       golang: go version | grep -oE '[0-9]+\.[0-9]+\.[0-9]+'
 
-  # clog-sample build — single native binary into tmp/
-  build: |
-    export EXE="clog"
-    export TITLE="Command Line of Go"
-    clog BC flow --reset
-    clog BC flow --check "pre-build build" --build "golang"
+  # ─── deploy ────────────────────────────────────────────────────────────────
+  # util/ci's deployer table (util/ci/deploy.go) implements `github-pages` and
+  # nothing else yet, so the base `deploy:` verb - `clog ci deploy` - stops at
+  # "kind github-release is valid but has no deployer yet". Until util grows
+  # one, the publish lives here. ci.targets.release above is already written in
+  # the shape that deployer will read, so retiring this override is a deletion:
+  # remove these two snippets and the base verb takes over unchanged.
+  deploy: |
+    eval "$(clog verb-args "$@")" || exit 1
+    # verb-args parses [dev|prod] [stack] [--fast] and drops every other flag,
+    # so --dry-run is this override's to read. Publishing is the one verb worth
+    # rehearsing: it is the only one that changes the outside world.
+    for a in "$@"; do [ "$a" = "--dry-run" ] && export CLOG_DEPLOY_DRYRUN=1; done
+    clog ci stack echo deploying --stack "$VERB_STACK" --mode "$VERB_MODE" || exit 1
+    t="$(clog ci targets --kind github-release | head -1)"
+    [ -z "$t" ] && clog Log -I "no github-release target in $VERB_MODE mode" && exit 0
+    CLOG_TARGET="$t" clog bc-github-release || exit 1
+
+  # ▼▼▼ bc-github-release ▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼▼
+  #  Publish $CLOG_TARGET's assets as a GitHub release, with the checksums file
+  #  setup-clog verifies against. Reads everything from ci.targets.<name>, so
+  #  the worker has no repo name, tag or asset list of its own.
+  #  Needs: gh authenticated (a laptop) or $GH_TOKEN with contents:write (CI).
+  bc-github-release: |
+    eval "$(clog Crayon)"
+    repo="$(clog ci target get repo --required)"     || exit 1
+    tag="$(clog ci target get tag --required)"       || exit 1
+    dir="$(clog ci target get dir --required)"       || exit 1
+    assets="$(clog ci target get assets --required)" || exit 1
+
+    clog BC stashLog -1 deploy -2 github-release -3 start -I "⚒️  release$cW $tag$cX →$cU github.com/$repo/releases"
+
+    # A release names a commit, so the tag has to exist before gh is asked to
+    # point at one. Building prod already refused a HEAD that is not a release
+    # tag; this catches the tag that was never pushed.
+    git rev-parse -q --verify "refs/tags/$tag" >/dev/null || {
+      clog BC stashLog -1 deploy -2 github-release -3 tag -E "no local tag $tag - tag the release commit first"
+      exit 1; }
+    git ls-remote --exit-code --tags origin "refs/tags/$tag" >/dev/null 2>&1 || {
+      clog BC stashLog -1 deploy -2 github-release -3 tag -E "tag $tag is not at origin - git push origin $tag"
+      exit 1; }
+
+    # checksums.txt is written from inside $dir so its lines carry bare asset
+    # names: that is the form get-clog.sh greps for.
+    ( cd "$dir" || exit 1
+      for a in $assets; do
+        [ -f "$a" ] || { clog BC stashLog -1 deploy -2 github-release -3 assets -E "missing asset $dir/$a - run clog build first"; exit 1; }
+      done
+      sha256sum $assets > checksums.txt ) || exit 1
+    clog BC stashLog -1 deploy -2 github-release -3 checksums -I "checksums.txt over $(echo $assets | wc -w) assets"
+
+    files=""; for a in $assets checksums.txt; do files="$files $dir/$a"; done
+
+    if [ -n "${CLOG_DEPLOY_DRYRUN:-}" ]; then
+      clog BC stashLog -1 deploy -2 github-release -3 dryrun -W "dry run - would publish$cF$files"
+      exit 0
+    fi
+
+    # Re-running a release replaces its assets rather than failing, so a
+    # re-run after a half-finished publish is safe.
+    if gh release view "$tag" --repo "$repo" >/dev/null 2>&1; then
+      clog BC stashLog -1 deploy -2 github-release -3 upload -I "release $tag exists - replacing assets"
+      gh release upload "$tag" $files --repo "$repo" --clobber || exit 1
+    else
+      gh release create "$tag" $files --repo "$repo" --title "$tag" --generate-notes || exit 1
+    fi
+
+    clog BC stashLog -1 deploy -2 github-release -3 status -S "✅ published $tag to github.com/$repo/releases/tag/$tag"
 
   # ─── demo snippets ─────────────────────────────────────────────────────────
   # These exist to show the snippet shapes, not to do work.
@@ -64,7 +162,9 @@ snippets:
 # check.tools (golang, yq, aws cli v2), and a group of the same name in this
 # layer would shadow it - koanf does not merge the blocks lists, it replaces.
 check:
-  build:
+  # Named `test` because that is the phase the golang stack asks for:
+  # `clog ci stack get chk` -> pre-build lint test scan.
+  test:
     blocks:
       - name: go vet
         try: go vet ./...

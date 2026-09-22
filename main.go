@@ -39,14 +39,16 @@ var rootCmd = &cobra.Command{
 It imports only github.com/mrmxf/util/* — no private utbd or clog-mrmxf packages.
 
 Run without arguments to see this help. Use --debug for verbose logging.`,
-	Run: func(cmd *cobra.Command, args []string) {
-		cmd.Help()
+	RunE: func(cmd *cobra.Command, args []string) error {
+		return cmd.Help()
 	},
 }
 
 func main() {
-	defer slogger.CloseLogger()
-	slogger.UsePrettyWithDbgTmpLogger(slog.LevelInfo)
+	defer func() { _ = slogger.CloseLogger() }()
+	// Nothing useful to do with a logger-setup error: there is no logger yet
+	// to report it with, and the slog default still works.
+	_, _ = slogger.UsePrettyWithDbgTmpLogger(slog.LevelInfo)
 
 	// Config is layered, and the order matters.
 	//
@@ -139,7 +141,7 @@ func init() {
 	root.PersistentFlags().BoolVar(&debugFlag, "debug", false, "enable debug logging")
 	root.PersistentPreRun = func(cmd *cobra.Command, args []string) {
 		if debugFlag {
-			slogger.UsePrettyWithDbgTmpLogger(slog.LevelDebug)
+			_, _ = slogger.UsePrettyWithDbgTmpLogger(slog.LevelDebug)
 			slog.Debug("debug logging enabled")
 		}
 	}

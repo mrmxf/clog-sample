@@ -1,0 +1,35 @@
+---
+#  Copyright ©2017-2025  Mr MXF   info@mrmxf.com
+#  BSD-3-Clause License           https://opensource.org/license/bsd-3-clause/
+#
+#  build — every push and pull request runs the same `clog build` a laptop runs.
+#
+#  There is nothing repo-specific here on purpose. The callable workflow asks
+#  .clog.yaml what this repo is (ci.stack: golang), installs that stack's
+#  toolchain and runs the verb. Changing what CI does means editing .clog.yaml,
+#  not this file — which is the only way CI and a laptop cannot drift.
+#
+#  Tags are handled by release.yaml, which builds AND publishes.
+
+name: build
+run-name: build(${{ github.event_name }}) 🥷${{ github.actor }}
+
+on:
+  push:
+    branches: ["**"]
+    tags-ignore: ["v*"]     # a release tag belongs to release.yaml
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    uses: mrmxf/util/.github/workflows/build.yaml@workflows-v1
+    permissions:
+      contents: read
+      id-token: write         # OIDC → Infisical, when ci.infisical is configured
+      security-events: write  # the scan phase's SARIF
+    with:
+      self-build: true        # this repo IS clog: build it from its own go.mod

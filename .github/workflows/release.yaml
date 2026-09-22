@@ -1,0 +1,86 @@
+---
+#  Copyright ©2017-2025  Mr MXF   info@mrmxf.com
+#  BSD-3-Clause License           https://opensource.org/license/bsd-3-clause/
+#
+#  release — push a vX.Y.Z tag, get a downloadable release.
+#
+#  This repo publishes the clog binaries every other repo bootstraps from, so
+#  it is the one repo that has to build and release ITSELF. The two jobs are
+#  the two verbs, and nothing else:
+#
+#    build    clog build prod    checks, lints, scans, writes tmp/clog-<cpu>-<os>
+#    release  clog deploy prod   checksums those assets and publishes them
+#
+#  The release job does NOT rebuild. It downloads the artifact the build job
+#  uploaded, so the bytes that were checked and scanned are the bytes that get
+#  published — a rebuild would publish something no gate ever saw.
+#
+#  What each job may do is decided by .clog.yaml (ci.policy), not by this file:
+#    ci.policy.deploy.prod.tags ["v*"]  a release tag publishes
+#    ci.policy.deploy.prod.dispatch     a deliberate manual run may republish
+#  clog-prepare writes that decision to env.do_deploy.
+
+name: release
+run-name: release(${{ github.ref_name }}) 🥷${{ github.actor }}
+
+on:
+  push:
+    tags: ["v*"]
+  workflow_dispatch:
+    inputs:
+      production:
+        description: "rebuild and republish the newest release tag"
+        type: boolean
+        default: true
+
+permissions:
+  contents: read
+
+concurrency:
+  group: release-${{ github.ref }}
+  cancel-in-progress: false     # never cancel a half-finished publish
+
+jobs:
+  build:
+    uses: mrmxf/util/.github/workflows/build.yaml@workflows-v1
+    permissions:
+      contents: read
+      id-token: write
+      security-events: write
+    with:
+      self-build: true
+      production: ${{ github.event_name == 'workflow_dispatch' && inputs.production }}
+
+  release:
+    needs: [build]
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      contents: write     # gh release create / upload
+      id-token: write     # OIDC → Infisical, when ci.infisical is configured
+    steps:
+      - name: prepare (checkout, go, clog, ci.policy)
+        uses: mrmxf/util/.github/actions/clog-prepare@workflows-v1
+        with:
+          self-build: true
+          production: ${{ github.event_name == 'workflow_dispatch' && inputs.production }}
+
+      - name: download the assets the build job checked
+        if: env.do_deploy == 'true'
+        uses: actions/download-artifact@fa0a91b85d4f404e444e00e005971372dc801d16 # v4.1.8
+        with:
+          name: ${{ env.ci_artifact }}
+          path: .
+
+      - name: deploy (clog deploy prod)
+        if: env.do_deploy == 'true'
+        env:
+          GH_TOKEN: ${{ github.token }}   # bc-github-release shells out to gh
+        run: |
+          clog ci run -- bash -c '
+            clog ci require deploy || exit 1
+            clog deploy prod'
+
+      - name: say why nothing was published
+        if: env.do_deploy != 'true'
+        run: clog ci policy

@@ -3,12 +3,19 @@ module github.com/mrmxf/clog-sample
 go 1.26.4
 
 require (
+	github.com/mrmxf/util/bc v0.13.0
 	github.com/mrmxf/util/buildinfo v0.12.0
 	github.com/mrmxf/util/check v0.11.2
+	github.com/mrmxf/util/ci v0.18.0
+	github.com/mrmxf/util/cmdlog v0.11.1
+	github.com/mrmxf/util/crayon v0.11.1
+	github.com/mrmxf/util/embedfs v0.14.1
+	github.com/mrmxf/util/install v0.12.0
 	github.com/mrmxf/util/kfg v0.12.0
 	github.com/mrmxf/util/slogger v0.11.2
 	github.com/mrmxf/util/snippets v0.11.2
-	github.com/mrmxf/util/snips v0.11.2
+	github.com/mrmxf/util/snips v0.12.1
+	github.com/mrmxf/util/source v0.11.1
 	github.com/spf13/cobra v1.10.2
 )
 
@@ -39,15 +46,8 @@ require (
 	github.com/mattn/go-isatty v0.0.20 // indirect
 	github.com/mitchellh/copystructure v1.2.0 // indirect
 	github.com/mitchellh/reflectwalk v1.0.2 // indirect
-	github.com/mrmxf/util/bc v0.12.1 // indirect
-	github.com/mrmxf/util/ci v0.17.0 // indirect
-	github.com/mrmxf/util/cmdlog v0.11.1 // indirect
-	github.com/mrmxf/util/crayon v0.11.1 // indirect
-	github.com/mrmxf/util/embedfs v0.13.0 // indirect
-	github.com/mrmxf/util/install v0.11.2 // indirect
 	github.com/mrmxf/util/scripts v0.11.0 // indirect
 	github.com/mrmxf/util/shell v0.11.0 // indirect
-	github.com/mrmxf/util/source v0.11.1 // indirect
 	github.com/nats-io/nats.go v1.52.0 // indirect
 	github.com/nats-io/nkeys v0.4.15 // indirect
 	github.com/nats-io/nuid v1.0.1 // indirect

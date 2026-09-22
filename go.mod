@@ -4,7 +4,7 @@ go 1.26.4
 
 require (
 	github.com/mrmxf/util/bc v0.13.0
-	github.com/mrmxf/util/buildinfo v0.12.0
+	github.com/mrmxf/util/buildinfo v0.13.0
 	github.com/mrmxf/util/check v0.11.2
 	github.com/mrmxf/util/ci v0.18.0
 	github.com/mrmxf/util/cmdlog v0.11.1

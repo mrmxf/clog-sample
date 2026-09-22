@@ -88,6 +88,8 @@ github.com/mrmxf/util/check v0.11.2 h1:TMVeNm1Qf1zbqck4FswiwzzDOvncv1KJ5jwbsUHI+
 github.com/mrmxf/util/check v0.11.2/go.mod h1:eaLGJTgJl2zvp7zjdNUk/gM7ViqJCzXLfMGRLEwkFS8=
 github.com/mrmxf/util/ci v0.18.0 h1:jMdr/hPjwBjQaLovM5sPCRlXnSBWA7oFPny56GLUbDw=
 github.com/mrmxf/util/ci v0.18.0/go.mod h1:Lsk2X6KyPCBj3j/GUDITT7vKH1ZYF7DevdzQWpu2oWE=
+github.com/mrmxf/util/ci v0.19.0 h1:ZIcZvCXNJ4rt+YmzuIVggRxUdx4UNxWaHe5CmLNB8AI=
+github.com/mrmxf/util/ci v0.19.0/go.mod h1:Lsk2X6KyPCBj3j/GUDITT7vKH1ZYF7DevdzQWpu2oWE=
 github.com/mrmxf/util/cmdlog v0.11.1 h1:JN8cCKjoNPESRnxW9xPbY/wPop4QV3ERyehP8552Lbk=
 github.com/mrmxf/util/cmdlog v0.11.1/go.mod h1:5ThmPhZ4svT3vje8VP5WY7ONMP0iKy0itp84mUTtS9k=
 github.com/mrmxf/util/crayon v0.11.1 h1:J3C2vuthpR0T+pufT/xMeTKzvJeaXXIQG8+RjRa7cf4=
@@ -98,6 +100,8 @@ github.com/mrmxf/util/install v0.12.0 h1:SiF6v1GXtJHgg6O9XNp69Jqf/vZaFLrzY56Fxjw
 github.com/mrmxf/util/install v0.12.0/go.mod h1:l7IWmp8Vl7w0XeiRRW+NVe76eZd584iah7EI4ieYnoo=
 github.com/mrmxf/util/install v0.13.0 h1:xqTMdJ7Jclt1ActCa5XhxLlgTQYhHyRzc0QVF2QnNrw=
 github.com/mrmxf/util/install v0.13.0/go.mod h1:l7IWmp8Vl7w0XeiRRW+NVe76eZd584iah7EI4ieYnoo=
+github.com/mrmxf/util/install v0.14.0 h1:KqVIW7Dcx9fzt+54BT/nOMF7h13RmJdu8OjyntMTiO4=
+github.com/mrmxf/util/install v0.14.0/go.mod h1:l7IWmp8Vl7w0XeiRRW+NVe76eZd584iah7EI4ieYnoo=
 github.com/mrmxf/util/kfg v0.12.0 h1:wgPYaZ1UsvACfqPOqTeCgaVFT0UKScQc6/0PR/XT4ak=
 github.com/mrmxf/util/kfg v0.12.0/go.mod h1:/tKpEYYSJnuMNJ1oI6B2PMGdmvizs7omx7zDV/257QM=
 github.com/mrmxf/util/scripts v0.11.0 h1:u0s6Pt1ln9ZInYq4vKbYpiCwo+wgNiv23jo2tlG2cG4=

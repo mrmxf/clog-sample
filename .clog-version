@@ -4,4 +4,4 @@
 #   - the CI bootstrap: mrmxf/util/.github/actions/setup-clog (reads this file)
 # Pinning here — not a floating tag or a secret — is what keeps dev and CI on
 # byte-identical clog. Bump deliberately.
-v0.12.8
+v0.12.10

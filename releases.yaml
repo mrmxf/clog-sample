@@ -2,6 +2,7 @@
 #  BSD-3-Clause License           https://opensource.org/license/bsd-3-clause/
 # flow:"stage",  build:"dev"  = auto-add to staging server      -  odd patches
 # flow:"main",   build:"prod" = to flag as a production release - even patches
+- {version: "v0.12.10", date: 2026-09-23, flow: main, build: prod, note: "first release cut by CI rather than by hand - the tag push runs clog build prod then clog deploy prod. Carries the pin fixes v0.12.8 needed but shipped without: util/buildinfo v0.13.0, install v0.14.0, ci v0.19.0, and clog --version, which clog-prepare runs to prove the build."}
 - {version: "v0.12.8", date: 2026-09-22, flow: main, build: prod, note: "clog builds and releases itself - .clog.yaml grows a ci: block (stack, policy, github-release target), a bc-github-release worker publishes the assets and checksums.txt with gh, and .github/workflows/{build,release}.yaml delegate to util's callable workflows. First release cut by clog deploy."}
 - {version: "v0.12.6", date: 2026-09-21, flow: main, build: prod, note: "first public clog release - wires the build commands (BC, ci, Log, Crayon, Source) so the binary can run build tasks, config is one .clog.yaml with no clogrc, and assets are named clog-<cpu>-<os> so util setup-clog can download them. Tracks clog-mrmxf v0.12.6"}
 - {version: "v0.1.0", date: 2026-06-06, flow: main, build: dev, note: initial clog-sample scaffold}

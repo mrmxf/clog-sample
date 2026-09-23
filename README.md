@@ -96,16 +96,22 @@ $ CLOG_VERSION_FILE=.clog-version ./get-clog.sh
 
 ## How this repo releases itself
 
+Push a tag. That is the whole ceremony:
+
 ```console
-$ git tag v0.12.8 && git push origin v0.12.8
+$ git tag v0.12.10 && git push origin v0.12.10
+```
+
+[.github/workflows/release.yaml](.github/workflows/release.yaml) then runs the
+same two verbs you would run by hand:
+
+```console
 $ clog build prod          # checks, lints, scans → tmp/clog-<cpu>-<os>
 $ clog deploy prod         # checksums those files, publishes the release
 ```
 
-Pushing the tag runs exactly that in Actions — see
-[.github/workflows/release.yaml](.github/workflows/release.yaml). The release
-job downloads what the build job produced rather than rebuilding, so the bytes
-that passed the gates are the bytes people download.
+The release job downloads what the build job produced rather than rebuilding,
+so the bytes that passed the gates are the bytes people download.
 
 ## More
 

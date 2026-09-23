@@ -6,7 +6,17 @@ clog-sample
 # Test binary
 *.test
 
-# Build output (clog BC flow writes tmp/BC-stash.yaml and tmp/<binaries>)
+# clog build and deploy artifacts - canonical names, the same in every repo,
+# so a debugger looks rather than guesses.
+#   _clog_build/artifacts  binaries, rendered site - what Deploy publishes
+#   _clog_build/check      stash, lint, vet, test output
+#   _clog_build/scan       SARIF from the static sweeps
+#   _clog_deploy/receipts  what was published, where
+#   _clog_deploy/probe     findings against the LIVE target
+_clog_build/
+_clog_deploy/
+
+# legacy, until every repo has moved
 tmp/
 
 # Output

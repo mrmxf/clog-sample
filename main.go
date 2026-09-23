@@ -96,6 +96,15 @@ func main() {
 		os.Exit(1)
 	}
 
+	// Case is meaningful in clog: a Capitalised command is shipped, a
+	// lowercase one is yours, and where both exist they are two commands on
+	// purpose - `clog build` runs your override, `clog Build` runs the default
+	// it overrides. ResolveCase supplies the other half of that bargain: when
+	// only one case exists there is no ambiguity to preserve, so either
+	// spelling should just work. Exact matches are left alone, which is what
+	// keeps the pair reachable.
+	rootCmd.SetArgs(snips.ResolveCase(rootCmd, os.Args[1:]))
+
 	if err := rootCmd.Execute(); err != nil {
 		os.Exit(1)
 	}

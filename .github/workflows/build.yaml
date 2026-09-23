@@ -10,6 +10,11 @@
 #  not this file — which is the only way CI and a laptop cannot drift.
 #
 #  Tags are handled by release.yaml, which builds AND publishes.
+#
+#  This repo is being retired in favour of mrmxf/clog, which now carries both
+#  the CLI and these workflows. It builds against that repo's build-check.yaml
+#  so the last thing it does is prove the new one works for a caller that is
+#  not itself.
 
 name: build
 run-name: build(${{ github.event_name }}) 🥷${{ github.actor }}
@@ -26,7 +31,7 @@ permissions:
 
 jobs:
   build:
-    uses: mrmxf/util/.github/workflows/build.yaml@workflows-v1
+    uses: mrmxf/clog/.github/workflows/build-check.yaml@main
     permissions:
       contents: read
       id-token: write         # OIDC → Infisical, when ci.infisical is configured

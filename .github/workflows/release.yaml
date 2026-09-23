@@ -8,8 +8,8 @@
 #  it is the one repo that has to build and release ITSELF. The two jobs are
 #  the two verbs, and nothing else:
 #
-#    build    clog build prod    checks, lints, scans, writes tmp/clog-<cpu>-<os>
-#    release  clog deploy prod   checksums those assets and publishes them
+#    build    clog build prod   gates, then writes _clog_build/artifacts/
+#    release  clog CI deploy    checksums those assets and publishes them
 #
 #  The release job does NOT rebuild. It downloads the artifact the build job
 #  uploaded, so the bytes that were checked and scanned are the bytes that get
@@ -42,7 +42,7 @@ concurrency:
 
 jobs:
   build:
-    uses: mrmxf/util/.github/workflows/build.yaml@workflows-v1
+    uses: mrmxf/clog/.github/workflows/build-check.yaml@main
     permissions:
       contents: read
       id-token: write
@@ -60,7 +60,7 @@ jobs:
       id-token: write     # OIDC → Infisical, when ci.infisical is configured
     steps:
       - name: prepare (checkout, go, clog, ci.policy)
-        uses: mrmxf/util/.github/actions/clog-prepare@workflows-v1
+        uses: mrmxf/clog/.github/actions/clog-prepare@main
         with:
           self-build: true
           production: ${{ github.event_name == 'workflow_dispatch' && inputs.production }}
@@ -72,15 +72,15 @@ jobs:
           name: ${{ env.ci_artifact }}
           path: .
 
-      - name: deploy (clog deploy prod)
+      - name: deploy (clog CI deploy)
         if: env.do_deploy == 'true'
         env:
-          GH_TOKEN: ${{ github.token }}   # bc-github-release shells out to gh
+          GH_TOKEN: ${{ github.token }}   # the github-release deployer shells out to gh
         run: |
-          clog ci run -- bash -c '
-            clog ci require deploy || exit 1
-            clog deploy prod'
+          clog CI run -- bash -c '
+            clog CI require deploy || exit 1
+            clog CI deploy --target release'
 
       - name: say why nothing was published
         if: env.do_deploy != 'true'
-        run: clog ci policy
+        run: clog CI show policy

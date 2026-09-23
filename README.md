@@ -1,4 +1,30 @@
+# clog-sample — moved to [mrmxf/clog](https://github.com/mrmxf/clog)
+
+> **This repository is archived. Development continues at
+> [github.com/mrmxf/clog](https://github.com/mrmxf/clog).**
+>
+> clog no longer lives in a repo called "sample". `mrmxf/clog` carries the CLI
+> **and** the reusable workflows and actions that build it, so forking one
+> repository gives you your own clog and your own CI in the same tree — which
+> is what this repo could never offer, because half of it lived in
+> `mrmxf/util/.github/`.
+>
+> | you want | go to |
+> |---|---|
+> | the binary | [mrmxf/clog releases](https://github.com/mrmxf/clog/releases) |
+> | the workflows | `mrmxf/clog/.github/workflows/build-check.yaml@workflows-v1` |
+> | to install it | `CLOG_REPO=mrmxf/clog bash <(curl -fsSL https://github.com/mrmxf/clog/releases/latest/download/get-clog.sh)` |
+>
+> **Existing releases here stay downloadable**, so nothing pinned to a
+> `v0.12.x` tag of this repo breaks. New versions are cut at `mrmxf/clog` from
+> `v1.0.0`, which also renames some commands — see
+> [doc/grammar.md](https://github.com/mrmxf/clog/blob/main/doc/grammar.md) for
+> every retired name and what replaced it.
+
+---
+
 # clog-sample
+
 
 **clog** is one vocabulary for building and deploying, on whatever runs your CI.
 
